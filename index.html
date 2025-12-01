@@ -72,7 +72,7 @@
             text-shadow: 0 0 8px rgba(201, 176, 122, 0.8);
             margin-bottom: 0.5rem; /* Reduced margin */
         }
-        #date-display, #user-id-display {
+        #date-display {
             font-family: 'Charmonman', cursive;
             color: var(--color-gold);
             font-size: 1rem; /* Base font size */
@@ -208,23 +208,78 @@
         }
 
         /* Modal styling */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+        
         .modal-content {
             padding: 1.5rem; /* Mobile modal padding */
             border-radius: 1rem;
             max-width: 95%; /* Take up more width on mobile */
             width: 400px;
+             /* Creamy, off-white background for vintage feel */
+            background: linear-gradient(to bottom right, var(--color-snow), #eae7e3);
+            color: var(--color-dark);
+            text-align: center;
+            animation: fadeIn 0.4s ease-out;
+            border: 5px solid var(--color-gold);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            position: relative;
         }
+        .modal-content::before {
+            content: '🌟';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2.5em;
+            text-shadow: 0 0 10px var(--color-gold);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-50px) scale(0.8); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
         #modal-title {
-            font-size: 2rem; /* Mobile modal title size */
+            font-family: 'Mountains of Christmas', cursive;
+            font-size: 2rem; 
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
         }
         #modal-message {
-            font-size: 1rem; /* Mobile modal message size */
+            font-family: 'Charmonman', cursive;
+            font-size: 1rem; 
+            margin-top: 1rem;
+            color: var(--color-dark);
         }
         .modal-button {
-            padding: 0.6rem 1.5rem; /* Mobile button size */
+            background-color: var(--color-red);
+            color: var(--color-snow);
+            padding: 0.6rem 1.5rem; 
+            border-radius: 0.75rem;
             font-size: 1rem;
             margin-top: 1rem;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+            display: inline-block; 
+            text-decoration: none; 
+            font-family: 'Mountains of Christmas', cursive;
         }
+        .modal-button:hover {
+            background-color: #b33941; 
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+        }
+
 
         /* Responsive grid layout */
         .calendar-grid {
@@ -270,6 +325,12 @@
                 grid-template-columns: repeat(5, 1fr);
                 gap: 2rem; /* Wider gap for desktop */
             }
+             #modal-title {
+                font-size: 2.5rem; 
+            }
+            #modal-message {
+                font-size: 1.2rem; 
+            }
         }
     </style>
 </head>
@@ -280,25 +341,18 @@
             🎄 The Christmas Countdown 🌟
         </h1>
         <p id="date-display" class="text-xl text-center mb-6"></p>
-        <p id="user-id-display" class="text-sm text-center mb-8"></p>
-
+        
+        <!-- Removed User ID and Firebase Loader -->
+        
         <div id="calendar-grid" class="calendar-grid">
             <!-- Doors will be injected here --></div>
-
-        <div id="loading-spinner" class="text-center mt-10 text-white">
-            <svg class="animate-spin h-8 w-8 mx-auto text-yellow-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            <p class="mt-2 text-gold-300">Connecting to the North Pole...</p>
-        </div>
     </div>
 
     <!-- Custom Modal for Messages --><div id="custom-modal" class="modal" onclick="document.getElementById('custom-modal').style.display = 'none'">
         <div class="modal-content" onclick="event.stopPropagation()">
             <h3 id="modal-title" class="mb-4"></h3>
             <p id="modal-message" class="mb-6"></p>
-            <!-- The link button is now handled here in the modal, not on the door back -->
+            <!-- The link button is now handled here in the modal -->
             <a href="#" target="_blank" class="modal-button" id="modal-content-button"
                     onclick="/* Handled by JS */">
                 Ho Ho Ho!
@@ -311,28 +365,14 @@
         </div>
     </div>
 
-    <!-- Firebase SDK Imports --><script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-        import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-
-        // Set Firebase Log Level to Debug for development visibility
-        setLogLevel('Debug');
-
+    <script>
         // --- GLOBAL VARIABLES & CONFIGURATION ---
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-advent-app';
-        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
-        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-
-        let db;
-        let auth;
-        let userId = 'loading';
+        const LOCAL_STORAGE_KEY = 'adventCalendarOpenedDoors';
         const TODAY = new Date().getDate();
         const CURRENT_MONTH = new Date().getMonth(); // 11 is December (0-indexed)
         const IS_DECEMBER = CURRENT_MONTH === 11;
 
-        // --- UPDATED CALENDAR DATA: Structured for TEXT or LINK ---
+        // --- CALENDAR DATA: Structured for TEXT or LINK ---
         const CALENDAR_DATA = [
             { type: 'link', title: 'Listen to Carol of the Bells', url: 'https://music.apple.com/us/album/carol-of-the-bells/1443494796?i=1443494807' },
             { type: 'text', content: "Did you know Rudolph's nose was originally blue in the story?" },
@@ -413,98 +453,29 @@
             modal.style.display = 'flex';
         }
 
-        function updateUserIdDisplay(id) {
-            document.getElementById('user-id-display').textContent = `User ID: ${id}`;
-        }
+        // --- LOCAL STORAGE DATA HANDLING ---
 
-        function showLoading(isVisible) {
-            document.getElementById('loading-spinner').style.display = isVisible ? 'block' : 'none';
-        }
-
-        // --- FIREBASE AND AUTHENTICATION ---
-
-        async function initializeFirebase() {
+        function loadDoorState() {
             try {
-                const app = initializeApp(firebaseConfig);
-                db = getFirestore(app);
-                auth = getAuth(app);
-
-                // Authenticate user
-                if (initialAuthToken) {
-                    await signInWithCustomToken(auth, initialAuthToken);
-                } else {
-                    await signInAnonymously(auth);
-                }
-
-                // Set up auth state change listener
-                onAuthStateChanged(auth, (user) => {
-                    if (user) {
-                        userId = user.uid;
-                        updateUserIdDisplay(userId);
-                        // Once authenticated, start listening to the data
-                        listenToDoorState();
-                    } else {
-                        // This case should ideally not happen if initial sign-in succeeds
-                        userId = crypto.randomUUID();
-                        updateUserIdDisplay(userId);
-                        listenToDoorState();
-                    }
-                    showLoading(false);
-                });
-
-            } catch (error) {
-                console.error("Firebase initialization or sign-in failed:", error);
-                showModal("Error", "Could not connect to Firebase. Data persistence is disabled.", true);
-                showLoading(false);
-            }
-        }
-
-        // --- FIRESTORE DATA HANDLING ---
-
-        function getDoorDocRef() {
-            // Private user data location
-            return doc(db, `/artifacts/${appId}/users/${userId}/advent_calendar/status`);
-        }
-
-        function listenToDoorState() {
-            // Guard clause: ensure db and userId are available
-            if (!db || userId === 'loading') {
-                console.warn("Firestore listener skipped: DB not ready or user ID loading.");
-                return;
-            }
-
-            onSnapshot(getDoorDocRef(), (docSnapshot) => {
-                let openedDoors = {};
-                if (docSnapshot.exists()) {
-                    openedDoors = docSnapshot.data() || {};
-                    console.log("Current opened doors loaded:", openedDoors);
-                } else {
-                    console.log("No existing door state found. Initializing.");
-                }
-                renderCalendar(openedDoors);
-            }, (error) => {
-                console.error("Error listening to door state:", error);
-                showModal("Data Error", "Failed to load saved calendar progress.", true);
-                renderCalendar({}); // Render calendar without saved state
-            });
-        }
-
-        async function saveDoorState(day) {
-            if (!db || userId === 'loading') {
-                showModal("Persistence Error", "Cannot save progress. Authentication failed.", true);
-                return;
-            }
-
-            try {
-                // Fetch current state, then update it
-                const doorRef = getDoorDocRef();
-                await setDoc(doorRef, { [day]: true }, { merge: true });
-                console.log(`Door ${day} successfully marked as opened.`);
+                const storedState = localStorage.getItem(LOCAL_STORAGE_KEY);
+                return storedState ? JSON.parse(storedState) : {};
             } catch (e) {
-                console.error("Error updating document: ", e);
-                showModal("Save Error", `Failed to save progress for Day ${day}.`, true);
+                console.error("Error loading state from localStorage:", e);
+                return {};
             }
         }
+
+        function saveDoorState(day) {
+            try {
+                const openedDoors = loadDoorState();
+                openedDoors[day] = true;
+                localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(openedDoors));
+            } catch (e) {
+                console.error("Error saving state to localStorage:", e);
+                showModal("Save Error", "Failed to save progress locally. Your progress may not be remembered.", true);
+            }
+        }
+
 
         // --- CALENDAR LOGIC & RENDERING ---
 
@@ -605,14 +576,16 @@
 
         // --- INITIALIZATION ---
         window.onload = function() {
-            // If it's not December, override TODAY for presentation purposes, but keep logic
+            // Update header date display
             if (!IS_DECEMBER) {
                 document.getElementById('date-display').textContent = `Today is ${new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}. Waiting for December...`;
             } else {
                  document.getElementById('date-display').textContent = `Today is Day ${TODAY} of December!`;
             }
 
-            initializeFirebase();
+            // Load state and render
+            const openedDoors = loadDoorState();
+            renderCalendar(openedDoors);
 
             // Start snowflake generation
             setInterval(createSnowflake, 300); // Create a new snowflake every 300ms
