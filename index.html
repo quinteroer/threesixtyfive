@@ -23,8 +23,6 @@
             /* Muted background gradient */
             background: linear-gradient(135deg, var(--color-dark) 0%, #11151a 100%);
             min-height: 100vh;
-            /* FIX: Removed flex properties to ensure natural vertical stacking */
-            /* justify-content: center; align-items: flex-start; */
             padding: 10px; 
             color: var(--color-snow);
             position: relative;
@@ -55,13 +53,13 @@
 
         .calendar-container {
             max-width: 1200px;
-            width: 100%;
+            width: 95%; /* Adjusted width for mobile visibility */
             /* FIX: Ensure container is centered with auto margins */
             margin: 0 auto; 
-            /* Added vertical padding to ensure content is not cut off when scrolling */
-            padding: 1.5rem; 
-            padding-top: 2.5rem; /* Extra room at the top */
-            padding-bottom: 2.5rem; /* Extra room at the bottom */
+            /* REDUCED PADDING for mobile */
+            padding: 1rem; 
+            padding-top: 2rem; 
+            padding-bottom: 2rem; 
             border-radius: 1.5rem; 
             background-color: var(--color-dark-accent);
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
@@ -231,7 +229,7 @@
         .modal-content {
             padding: 1.5rem; /* Mobile modal padding */
             border-radius: 1rem;
-            max-width: 95%; /* Take up more width on mobile */
+            max-width: 85%; /* REDUCED to give snowflakes more visibility */
             width: 400px;
              /* Creamy, off-white background for vintage feel */
             background: linear-gradient(to bottom right, var(--color-snow), #eae7e3);
@@ -334,6 +332,8 @@
                 border: 5px solid var(--color-gold);
                 padding-top: 2.5rem; 
                 padding-bottom: 2.5rem;
+                /* Reset width for desktop */
+                width: 100%; 
             }
             h1 {
                 font-size: 3.5rem;
