@@ -86,12 +86,12 @@
             justify-content: center;
             align-items: center;
             font-weight: bold;
-            font-size: 2rem; /* Mobile door number size applied to front/back number spans */
+            font-size: 2rem; 
             cursor: pointer;
             transition: all 0.5s ease;
             transform-style: preserve-3d;
             position: relative;
-            border-radius: 0.75rem; /* Mobile border radius */
+            border-radius: 0.75rem; 
             user-select: none;
             perspective: 1000px;
         }
@@ -102,7 +102,7 @@
             width: 100%;
             height: 100%;
             background-color: var(--color-red);
-            border: 4px solid var(--color-gold); /* Mobile border size */
+            border: 4px solid var(--color-gold); 
             border-radius: 0.75rem;
             backface-visibility: hidden;
             display: flex;
@@ -255,19 +255,26 @@
             font-size: 2rem; 
             text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
         }
-        #modal-message {
+        /* Style for the text content when no embed is present */
+        #modal-content-container p {
             font-family: 'Charmonman', cursive;
             font-size: 1rem; 
             margin-top: 1rem;
             color: var(--color-dark);
         }
+        /* Container for the iframe/text, ensures good spacing */
+        #modal-content-container {
+            margin-bottom: 1.5rem;
+            margin-top: 1rem;
+        }
+
         .modal-button {
             background-color: var(--color-red);
             color: var(--color-snow);
             padding: 0.6rem 1.5rem; 
             border-radius: 0.75rem;
             font-size: 1rem;
-            margin-top: 1rem;
+            margin-top: 0.5rem; /* Adjusted margin */
             transition: background-color 0.3s ease, transform 0.2s ease;
             box-shadow: 0 3px 10px rgba(0,0,0,0.3);
             display: inline-block; 
@@ -328,7 +335,7 @@
              #modal-title {
                 font-size: 2.5rem; 
             }
-            #modal-message {
+            #modal-content-container p {
                 font-size: 1.2rem; 
             }
         }
@@ -342,8 +349,6 @@
         </h1>
         <p id="date-display" class="text-xl text-center mb-6"></p>
         
-        <!-- Removed User ID and Firebase Loader -->
-        
         <div id="calendar-grid" class="calendar-grid">
             <!-- Doors will be injected here --></div>
     </div>
@@ -351,14 +356,14 @@
     <!-- Custom Modal for Messages --><div id="custom-modal" class="modal" onclick="document.getElementById('custom-modal').style.display = 'none'">
         <div class="modal-content" onclick="event.stopPropagation()">
             <h3 id="modal-title" class="mb-4"></h3>
-            <p id="modal-message" class="mb-6"></p>
-            <!-- The link button is now handled here in the modal -->
-            <a href="#" target="_blank" class="modal-button" id="modal-content-button"
-                    onclick="/* Handled by JS */">
-                Ho Ho Ho!
-            </a>
-            <!-- A simpler close button is hidden by default -->
-            <button class="modal-button hidden" id="modal-close-button"
+            
+            <!-- NEW: Flexible container for text or iframe -->
+            <div id="modal-content-container" class="mb-6">
+                <!-- Content injected here by JS -->
+            </div>
+
+            <!-- Single close button for both song and text days -->
+            <button class="modal-button"
                     onclick="document.getElementById('custom-modal').style.display = 'none'">
                 Ho Ho Ho!
             </button>
@@ -372,32 +377,33 @@
         const CURRENT_MONTH = new Date().getMonth(); // 11 is December (0-indexed)
         const IS_DECEMBER = CURRENT_MONTH === 11;
 
-        // --- CALENDAR DATA: Structured for TEXT or LINK ---
+        // --- CALENDAR DATA: Structured for TEXT or EMBEDDED IFRAME ---
         const CALENDAR_DATA = [
-            { type: 'link', title: '<iframe allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write" frameborder="0" height="175" style="width:100%;max-width:660px;overflow:hidden;border-radius:10px;" sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation" src="https://embed.music.apple.com/us/song/white-christmas/1425235073"></iframe>' },
+            // FIX: Removed the extraneous '<<' at the start of the iframe string
+            { type: 'link', content: '<iframe allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write" frameborder="0" height="175" style="width:100%;max-width:660px;overflow:hidden;border-radius:10px;" sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation" src="https://embed.music.apple.com/us/song/white-christmas/1425235073"></iframe>' },
             { type: 'text', content: "Did you know Rudolph's nose was originally blue in the story?" },
             { type: 'text', content: "🎁 Time to wrap a small gift for a loved one!" },
             { type: 'text', content: "Bake some delicious gingerbread cookies today!" },
             { type: 'text', content: "Quote: 'The best way to spread Christmas cheer is singing loud for all to hear.'" },
-            { type: 'link', title: 'Listen to Jingle Bells', url: 'https://music.apple.com/us/album/jingle-bells/1507433241?i=1507433246' },
+            { type: 'link', content: '<iframe allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write" frameborder="0" height="175" style="width:100%;max-width:660px;overflow:hidden;border-radius:10px;" sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation" src="https://embed.music.apple.com/us/song/jingle-bells/1507433241?i=1507433246"></iframe>' },
             { type: 'text', content: "Light a pine-scented candle and enjoy the cozy evening." },
             { type: 'text', content: "Write a short, secret letter to Santa." },
             { type: 'text', content: "Watch a classic holiday movie tonight." },
-            { type: 'link', title: 'Listen to The Christmas Song', url: 'https://music.apple.com/us/album/the-christmas-song-merry-christmas-to-you/1440786026?i=1440786043' },
+            { type: 'link', content: '<iframe allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write" frameborder="0" height="175" style="width:100%;max-width:660px;overflow:hidden;border-radius:10px;" sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation" src="https://embed.music.apple.com/us/song/the-christmas-song-merry-christmas-to-you/1440786026?i=1440786043"></iframe>' },
             { type: 'text', content: "Tell a friend why you appreciate them." },
             { type: 'text', content: "❄️ Go outside and look for snowflakes or frost." },
             { type: 'text', content: "Draw a picture of a snowman or a reindeer." },
-            { type: 'link', title: 'Listen to Sleigh Ride', url: 'https://music.apple.com/us/album/sleigh-ride/1544063853?i=1544063857' },
+            { type: 'link', content: '<iframe allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write" frameborder="0" height="175" style="width:100%;max-width:660px;overflow:hidden;border-radius:10px;" sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation" src="https://embed.music.apple.com/us/song/sleigh-ride/1544063853?i=1544063857"></iframe>' },
             { type: 'text', content: "Remember a favorite Christmas memory from childhood." },
             { type: 'text', content: "Make a paper snowflake decoration." },
             { type: 'text', content: "Donate an item to a local charity or food bank." },
-            { type: 'link', title: 'Listen to Winter Wonderland', url: 'https://music.apple.com/us/album/winter-wonderland/1443494796?i=1443494808' },
+            { type: 'link', content: '<iframe allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write" frameborder="0" height="175" style="width:100%;max-width:660px;overflow:hidden;border-radius:10px;" sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation" src="https://embed.music.apple.com/us/song/winter-wonderland/1443494796?i=1443494808"></iframe>' },
             { type: 'text', content: "Read a holiday story aloud." },
             { type: 'text', content: "Look up the recipe for eggnog and try making it!" },
-            { type: 'link', title: 'Listen to Deck the Halls', url: 'https://music.apple.com/us/album/deck-the-halls/1507433241?i=1507433248' },
+            { type: 'link', content: '<iframe allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write" frameborder="0" height="175" style="width:100%;max-width:660px;overflow:hidden;border-radius:10px;" sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation" src="https://embed.music.apple.com/us/song/deck-the-halls/1507433241?i=1507433248"></iframe>' },
             { type: 'text', content: "Write down three things you are grateful for this season." },
             { type: 'text', content: "Send a text message with a Christmas emoji to three friends." },
-            { type: 'link', title: 'Listen to Silent Night', url: 'https://music.apple.com/us/album/silent-night/1507433241?i=1507433249' },
+            { type: 'link', content: '<iframe allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write" frameborder="0" height="175" style="width:100%;max-width:660px;overflow:hidden;border-radius:10px;" sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation" src="https://embed.music.apple.com/us/song/silent-night/1507433241?i=1507433249"></iframe>' },
             { type: 'text', content: "🎅 Merry Christmas! You made it! Enjoy the magic of today." }
         ];
 
@@ -407,11 +413,12 @@
         function showModal(title, message, isError = false) {
             const modal = document.getElementById('custom-modal');
             const titleElement = document.getElementById('modal-title');
-            const messageElement = document.getElementById('modal-message');
-            const contentButton = document.getElementById('modal-content-button');
-            const closeButton = document.getElementById('modal-close-button');
+            // Reference the content container
+            const contentContainer = document.getElementById('modal-content-container');
+            const closeButton = document.querySelector('.modal-button');
             
-            let displayMessage = '';
+            // Clear previous content
+            contentContainer.innerHTML = ''; 
 
             // Set Title and Color
             titleElement.textContent = title;
@@ -420,36 +427,24 @@
             // --- Determine Content Type and Configure Modal ---
             if (typeof message === 'object' && message !== null) {
                 if (message.type === 'link') {
-                    displayMessage = 'Ready for today\'s Christmas tune? Click the button below to listen!';
-                    
-                    // Show Link Button, Hide Close Button
-                    contentButton.textContent = message.title;
-                    contentButton.onclick = () => {
-                        document.getElementById('custom-modal').style.display = 'none'; 
-                        window.open(message.url, '_blank');
-                    };
-                    contentButton.href = message.url;
-                    
-                    contentButton.classList.remove('hidden');
-                    closeButton.classList.add('hidden');
+                    // Inject raw iframe code for song player
+                    contentContainer.innerHTML = message.content;
+                    closeButton.textContent = 'Close Player';
                     
                 } else { // type: 'text'
-                    displayMessage = message.content;
-                    
-                    // Hide Link Button, Show Close Button
-                    contentButton.classList.add('hidden');
-                    closeButton.classList.remove('hidden');
+                    // Inject text wrapped in a <p> tag to apply modal styling
+                    contentContainer.innerHTML = `<p>${message.content}</p>`;
+                    closeButton.textContent = 'Ho Ho Ho!';
                 }
             } else { 
                 // Simple error message (isError=true)
-                displayMessage = message; 
-
-                // Hide Link Button, Show Close Button
-                contentButton.classList.add('hidden');
-                closeButton.classList.remove('hidden');
+                contentContainer.innerHTML = `<p>${message}</p>`;
+                closeButton.textContent = 'Dismiss';
             }
 
-            messageElement.textContent = displayMessage;
+            // Set the close handler for the single button
+            closeButton.onclick = () => document.getElementById('custom-modal').style.display = 'none';
+
             modal.style.display = 'flex';
         }
 
