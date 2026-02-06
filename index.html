@@ -37,11 +37,13 @@
             align-items: center;
             text-align: center;
             width: 100%;
-            padding-top: calc(20vh + env(safe-area-inset-top));
+            /* 12% of the screen height + the Dynamic Island height */
+            padding-top: calc(12vh + env(safe-area-inset-top)); 
             padding-left: 20px;
             padding-right: 20px;
-            margin-bottom: 50px;
-            animation: fadeIn 0.8s ease-out;
+            /* Added space between the title and the first card */
+            margin-bottom: 60px; 
+            animation: fadeIn 1.2s ease-out;
         }
 
         .title-container {
@@ -50,8 +52,11 @@
             justify-content: center;
             gap: 20px;
             width: 100%;
-            margin-bottom: 25px;
+            /* Extra room below the title block */
+            margin-bottom: 30px; 
         }
+
+        
 
         .title-text {
             display: flex;
@@ -82,7 +87,8 @@
             color: #800f2f;
             font-style: italic;
             font-weight: 700;
-            margin-top: 20px;
+            /* Extra space below the "A Year of Love" text */
+            margin-top: 25px; 
             opacity: 0.9;
         }
 
