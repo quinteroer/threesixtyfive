@@ -71,18 +71,32 @@
             justify-content: center;
             cursor: pointer;
             transition: all 0.4s ease;
-            position: relative;
+            position: relative; /* REQUIRED for positioning the check-mark */
             color: #f5e1a4;
         }
 
-        .day-card:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(201, 176, 122, 0.4);
+        /* NEW: Style for the 'Check Off' heart */
+        .check-mark {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            font-size: 0.8em;
+            color: #f5e1a4;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 2;
+        }
+
+        .day-card.checked .check-mark {
+            opacity: 1;
         }
 
         .day-card.unlocked {
             background: linear-gradient(135deg, #800f2f 0%, #c9184a 100%);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+        .day-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(201, 176, 122, 0.4);
         }
 
         .day-card.locked {
@@ -182,22 +196,47 @@
         const today = new Date();
         const countdownStart = new Date(2026, 1, 1); // Feb 14, 2026
 
+        const openedDays = JSON.parse(localStorage.getItem('openedLoveDays') || '{}');
+
         for (let day = config.startDay; day <= config.endDay; day++) {
             const cardDate = new Date(countdownStart);
             cardDate.setDate(countdownStart.getDate() + day - 1);
             
             const isUnlocked = today >= cardDate; 
-
             const card = document.createElement('div');
+            
+            // --- NEW: Add the heart icon to the card ---
+            const heart = document.createElement('span');
+            heart.className = 'check-mark';
+            heart.innerHTML = '❤️';
+            card.appendChild(heart);
+
             card.className = `day-card ${isUnlocked ? 'unlocked' : 'locked'}`;
-            card.innerHTML = `<div class="day-number">${isUnlocked ? day : '🔒'}</div><div class="day-label">Day ${day}</div>`;
+            
+            // --- NEW: Apply 'checked' class if already opened ---
+            if (openedDays[`day${day}`]) {
+                card.classList.add('checked');
+            }
+
+            card.innerHTML += `<div class="day-number">${isUnlocked ? day : '🔒'}</div><div class="day-label">Day ${day}</div>`;
             
             if (isUnlocked) {
-                // Ensure data exists for the day, otherwise pass null
                 const dayData = typeof loveData !== 'undefined' ? loveData[`day${day}`] : null;
-                card.onclick = () => openModal(day, cardDate, dayData);
+                card.onclick = () => {
+                    // --- NEW: Check off the day on click ---
+                    card.classList.add('checked');
+                    saveProgress(day);
+                    openModal(day, cardDate, dayData);
+                };
             }
             grid.appendChild(card);
+        }
+
+        // --- NEW: Function to save progress ---
+        function saveProgress(dayNumber) {
+            const currentProgress = JSON.parse(localStorage.getItem('openedLoveDays') || '{}');
+            currentProgress[`day${dayNumber}`] = true;
+            localStorage.setItem('openedLoveDays', JSON.stringify(currentProgress));
         }
 
         function openModal(day, date, dayData) {
