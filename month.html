@@ -23,11 +23,13 @@
             padding: 20px;
             background-attachment: fixed;
             color: #f8edeb;
+            background-attachment: fixed;
+            min-height: 100vh;
         }
 
         .back-button {
             position: fixed;
-            top: 20px;
+            top: calc(20px + env(safe-area-inset-top));
             left: 20px;
             background: rgba(45, 11, 14, 0.9);
             color: #c9b07a;
@@ -43,6 +45,8 @@
         .header {
             text-align: center;
             margin: 80px 0 40px 0;
+            padding-top: calc(20px + env(safe-area-inset-top)); 
+            margin-bottom: 40px;
         }
 
         .header h1 {
