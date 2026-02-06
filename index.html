@@ -196,8 +196,20 @@
         }
 
         @media (max-width: 600px) {
-            .header { padding-top: calc(20px + env(safe-area-inset-top)); }
-            .months-container { grid-template-columns: 1fr; }
+            .header { 
+                /* Match the 12vh airy look on mobile too */
+                padding-top: calc(12vh + env(safe-area-inset-top)); 
+            }
+            .header h1 { 
+                /* Keep the title slightly smaller so it doesn't wrap weirdly on small screens */
+                font-size: 2.2rem; 
+            }
+            .date-range { 
+                padding: 12px 20px; 
+            }
+            .months-container { 
+                grid-template-columns: 1fr; 
+            }
         }
     </style>
 </head>
