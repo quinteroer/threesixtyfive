@@ -4,8 +4,8 @@
     <script src="./calendar_data.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="theme-color" content="#1a0507">
     <title>🌹 365 Days of Love 🌹</title>
+    <meta name="theme-color" content="#ffcbd5">
     <style>
         * {
             margin: 0;
@@ -15,37 +15,49 @@
 
         body {
             font-family: 'Georgia', serif;
-            background: linear-gradient(135deg, #1a0507 0%, #4a0e0e 50%, #800f2f 100%);
+            /* Using your new simple filename background */
+            background-image: url('background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             padding: 20px;
-            background-attachment: fixed;
-            color: #f8edeb;
-            background-attachment: fixed;
-            min-height: 100vh;
+            /* Safe area for Dynamic Island */
+            padding-top: env(safe-area-inset-top);
+            color: #4a0e0e;
         }
 
         .back-button {
             position: fixed;
-            top: calc(20px + env(safe-area-inset-top));
+            /* Precise calculation to clear the Dynamic Island */
+            top: calc(15px + env(safe-area-inset-top));
             left: 20px;
-            background: rgba(45, 11, 14, 0.9);
-            color: #c9b07a;
+            /* Liquid Glass Button style */
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: #800f2f;
             text-decoration: none;
-            padding: 12px 24px;
+            padding: 10px 20px;
             border-radius: 25px;
             font-weight: 600;
-            border: 1px solid #c9b07a;
+            border: 1px solid rgba(255, 255, 255, 0.5);
             z-index: 100;
             transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
 
         .header {
             text-align: center;
-            margin: 80px 0 40px 0;
-            padding-top: calc(20px + env(safe-area-inset-top)); 
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* Pushes title down below camera island */
+            padding-top: calc(50px + env(safe-area-inset-top)); 
             margin-bottom: 40px;
         }
 
@@ -54,21 +66,27 @@
             background: linear-gradient(to bottom, #f5e1a4 0%, #c9b07a 50%, #a67c00 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            /* Shadow for gold text readability on pink */
+            filter: drop-shadow(2px 2px 3px rgba(74, 14, 14, 0.4));
             font-weight: 700;
         }
 
         .calendar-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 20px;
+            gap: 15px;
             max-width: 1000px;
             width: 100%;
+            padding-bottom: 40px;
         }
 
         .day-card {
             aspect-ratio: 1;
-            background: rgba(45, 11, 14, 0.9);
-            border: 2px solid #c9b07a;
+            /* Liquid Glass Style */
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
             border-radius: 15px;
             display: flex;
             flex-direction: column;
@@ -77,16 +95,14 @@
             cursor: pointer;
             transition: all 0.4s ease;
             position: relative;
-            color: #f5e1a4;
+            color: #800f2f;
         }
 
         .check-mark {
             position: absolute;
-            top: 8px;
-            right: 8px;
+            top: 6px;
+            right: 6px;
             font-size: 0.8em;
-            color: #f5e1a4; 
-            filter: drop-shadow(0 0 2px rgba(0,0,0,0.5));
             opacity: 0;
             transition: opacity 0.3s ease;
             z-index: 2;
@@ -97,61 +113,83 @@
         }
 
         .day-card.unlocked {
-            background: linear-gradient(135deg, #800f2f 0%, #c9184a 100%);
+            /* Keep gold accent on unlocked cards */
+            border-color: rgba(201, 176, 122, 0.6);
         }
 
         .day-card:hover {
             transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(201, 176, 122, 0.4);
+            background: rgba(255, 255, 255, 0.6);
         }
 
         .day-card.locked {
-            background: rgba(20, 5, 7, 0.85);
-            border-color: rgba(201, 176, 122, 0.2);
-            color: rgba(245, 225, 164, 0.15);
+            background: rgba(0, 0, 0, 0.05);
+            border-color: rgba(255, 255, 255, 0.2);
+            color: rgba(74, 14, 14, 0.2);
             cursor: not-allowed;
+            backdrop-filter: blur(5px);
         }
 
         .day-number { font-size: 2em; font-weight: bold; position: relative; z-index: 1; }
-        .day-label { font-size: 0.8em; opacity: 0.7; position: relative; z-index: 1; }
+        .day-label { font-size: 0.7em; opacity: 0.7; position: relative; z-index: 1; text-transform: uppercase; }
 
+        /* Liquid Glass Modal */
         .modal {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(10px);
+            background: rgba(128, 15, 47, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             z-index: 1000;
             align-items: center;
             justify-content: center;
         }
         .modal.active { display: flex; }
         .modal-content {
-            background: #2d0b0e;
-            border: 2px solid #c9b07a;
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.8);
             padding: 30px;
-            border-radius: 20px;
+            border-radius: 25px;
             width: 90%;
             max-width: 500px;
             text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        /* Modal specific text styles */
+        #modalDay { color: #800f2f; font-size: 2em; margin-bottom: 5px; }
+        #modalDate { color: #4a0e0e; font-style: italic; margin-bottom: 20px; opacity: 0.7; }
+        #modalMessage { color: #4a0e0e; margin-top: 20px; line-height: 1.6; font-size: 1.1em; }
+        
+        .close-btn {
+            margin-top: 25px;
+            background: #800f2f;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.3s;
         }
     </style>
 </head>
 <body>
     <a href="index.html" class="back-button">← Back</a>
     <div class="header">
-        <div id="monthEmoji" style="font-size: 3em;"></div>
+        <div id="monthEmoji" style="font-size: 3em; margin-bottom: 10px;"></div>
         <h1 id="monthTitle"></h1>
     </div>
     <div class="calendar-grid" id="calendarGrid"></div>
 
     <div class="modal" id="modal">
         <div class="modal-content">
-            <h2 id="modalDay" style="color: #f5e1a4; font-size: 2em;"></h2>
-            <p id="modalDate" style="color: #ffb3c1; font-style: italic; margin-bottom: 20px;"></p>
+            <h2 id="modalDay"></h2>
+            <p id="modalDate"></p>
             <div id="musicPlayer"></div>
-            <p id="modalMessage" style="color: #f8edeb; margin-top: 20px; line-height: 1.6;"></p>
-            <button onclick="closeModal()" style="margin-top: 20px; background: #c9b07a; padding: 10px 20px; border: none; border-radius: 20px; cursor: pointer;">Close</button>
+            <p id="modalMessage"></p>
+            <button class="close-btn" onclick="closeModal()">Close</button>
         </div>
     </div>
 
@@ -181,7 +219,7 @@
 
         const grid = document.getElementById('calendarGrid');
         const today = new Date();
-        const countdownStart = new Date(2026, 1, 1); // Verified Start Date
+        const countdownStart = new Date(2026, 1, 1); // Set to Feb 1 for your current testing
 
         const openedDays = JSON.parse(localStorage.getItem('openedLoveDays') || '{}');
 
@@ -192,19 +230,18 @@
             const isUnlocked = today >= cardDate; 
             const card = document.createElement('div');
             
-            // Heart icon initialization
-            const heart = document.createElement('span');
-            heart.className = 'check-mark';
-            heart.innerHTML = '❤️';
-            card.appendChild(heart);
-
             card.className = `day-card ${isUnlocked ? 'unlocked' : 'locked'}`;
             
             if (openedDays[`day${day}`]) {
                 card.classList.add('checked');
             }
 
-            card.innerHTML += `<div class="day-number">${isUnlocked ? day : '🔒'}</div><div class="day-label">Day ${day}</div>`;
+            // Creating card structure
+            card.innerHTML = `
+                <span class="check-mark">❤️</span>
+                <div class="day-number">${isUnlocked ? day : '🔒'}</div>
+                <div class="day-label">Day ${day}</div>
+            `;
             
             if (isUnlocked) {
                 const dayData = typeof loveData !== 'undefined' ? loveData[`day${day}`] : null;
@@ -238,7 +275,7 @@
                 playerEl.innerHTML = dayData.song_embed || "";
             } else {
                 messageEl.textContent = "I can't wait to spend this year with you. ❤️";
-                playerEl.innerHTML = "<p style='color: #c9b07a; font-style: italic;'>Song of the day coming soon... 🌹</p>";
+                playerEl.innerHTML = "<p style='color: #800f2f; font-style: italic;'>Song of the day coming soon... 🌹</p>";
             }
         }
 
