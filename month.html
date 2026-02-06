@@ -71,17 +71,17 @@
             justify-content: center;
             cursor: pointer;
             transition: all 0.4s ease;
-            position: relative; /* REQUIRED for positioning the check-mark */
+            position: relative;
             color: #f5e1a4;
         }
 
-        /* NEW: Style for the 'Check Off' heart */
         .check-mark {
             position: absolute;
             top: 8px;
             right: 8px;
             font-size: 0.8em;
-            color: #f5e1a4;
+            color: #f5e1a4; 
+            filter: drop-shadow(0 0 2px rgba(0,0,0,0.5));
             opacity: 0;
             transition: opacity 0.3s ease;
             z-index: 2;
@@ -94,6 +94,7 @@
         .day-card.unlocked {
             background: linear-gradient(135deg, #800f2f 0%, #c9184a 100%);
         }
+
         .day-card:hover {
             transform: scale(1.05);
             box-shadow: 0 0 20px rgba(201, 176, 122, 0.4);
@@ -106,8 +107,8 @@
             cursor: not-allowed;
         }
 
-        .day-number { font-size: 2em; font-weight: bold; }
-        .day-label { font-size: 0.8em; opacity: 0.7; }
+        .day-number { font-size: 2em; font-weight: bold; position: relative; z-index: 1; }
+        .day-label { font-size: 0.8em; opacity: 0.7; position: relative; z-index: 1; }
 
         .modal {
             display: none;
@@ -128,25 +129,6 @@
             width: 90%;
             max-width: 500px;
             text-align: center;
-        }
-        .check-mark {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            font-size: 0.8em;
-            color: #f5e1a4; /* Champagne Gold */
-            filter: drop-shadow(0 0 2px rgba(0,0,0,0.5));
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .day-card.checked .check-mark {
-            opacity: 1;
-        }
-        
-        /* Optional: Dim the card slightly once checked so the focus is on new days */
-        .day-card.checked {
-            border-color: rgba(201, 176, 122, 0.5);
         }
     </style>
 </head>
@@ -194,7 +176,7 @@
 
         const grid = document.getElementById('calendarGrid');
         const today = new Date();
-        const countdownStart = new Date(2026, 1, 1); // Feb 14, 2026
+        const countdownStart = new Date(2026, 1, 14); // Verified Start Date
 
         const openedDays = JSON.parse(localStorage.getItem('openedLoveDays') || '{}');
 
@@ -205,7 +187,7 @@
             const isUnlocked = today >= cardDate; 
             const card = document.createElement('div');
             
-            // --- NEW: Add the heart icon to the card ---
+            // Heart icon initialization
             const heart = document.createElement('span');
             heart.className = 'check-mark';
             heart.innerHTML = '❤️';
@@ -213,7 +195,6 @@
 
             card.className = `day-card ${isUnlocked ? 'unlocked' : 'locked'}`;
             
-            // --- NEW: Apply 'checked' class if already opened ---
             if (openedDays[`day${day}`]) {
                 card.classList.add('checked');
             }
@@ -223,7 +204,6 @@
             if (isUnlocked) {
                 const dayData = typeof loveData !== 'undefined' ? loveData[`day${day}`] : null;
                 card.onclick = () => {
-                    // --- NEW: Check off the day on click ---
                     card.classList.add('checked');
                     saveProgress(day);
                     openModal(day, cardDate, dayData);
@@ -232,7 +212,6 @@
             grid.appendChild(card);
         }
 
-        // --- NEW: Function to save progress ---
         function saveProgress(dayNumber) {
             const currentProgress = JSON.parse(localStorage.getItem('openedLoveDays') || '{}');
             currentProgress[`day${dayNumber}`] = true;
@@ -246,7 +225,6 @@
                 weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
             });
 
-            // Set the message and music from the loveData dictionary
             const messageEl = document.getElementById('modalMessage');
             const playerEl = document.getElementById('musicPlayer');
 
@@ -261,11 +239,9 @@
 
         function closeModal() { 
             document.getElementById('modal').classList.remove('active');
-            // Stop the music when closing the modal
             document.getElementById('musicPlayer').innerHTML = "";
         }
         
-        // Close modal on outside click
         window.onclick = function(event) {
             const modal = document.getElementById('modal');
             if (event.target == modal) {
