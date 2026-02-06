@@ -1,11 +1,10 @@
 {
-  "name": "Festive Advent Calendar",
-  "short_name": "Advent 2025",
-  "description": "A cozy, custom advent calendar for the holidays.",
+  "name": "365 Days of Love",
+  "short_name": "365 Love",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#1e252e",
-  "theme_color": "#992d37",
+  "background_color": "#ffcbd5",
+  "theme_color": "#ffcbd5"
   "icons": [
     {
       "src": "./app_icon.png",
