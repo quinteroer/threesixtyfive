@@ -1,6 +1,6 @@
 {
   "name": "STAGING - 365 Days",
-  "short_name": "365 Songs",
+  "short_name": "STAGING",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#ffcbd5",
