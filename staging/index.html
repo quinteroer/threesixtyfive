@@ -30,10 +30,10 @@
 
         .bg-fixed {
             position: fixed;
-            top: 0;
+            top: calc(-1 * env(safe-area-inset-top));
             left: 0;
             width: 100vw;
-            height: 100vh;
+            height: calc(100vh + env(safe-area-inset-top) + env(safe-area-inset-bottom));
             z-index: -1; /* Puts it behind everything */
             background-image: url('assets/background.jpg');
             background-size: cover;
