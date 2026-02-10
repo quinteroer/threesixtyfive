@@ -174,9 +174,9 @@
         }
         
         .modal-content {
-            background: rgba(255, 255, 255, 0.65); /* More transparent */
-            backdrop-filter: blur(20px); /* Blur what's behind the modal */
-            -webkit-backdrop-filter: blur(20px); /* iOS support */
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.8);
             padding: 40px 30px;
             border-radius: 35px;
@@ -185,9 +185,7 @@
             text-align: center;
             box-shadow: 0 30px 60px rgba(0,0,0,0.3);
             animation: modalBlurIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-            -webkit-transform: translateZ(0);
-            transform: translateZ(0);
-            will-change: transform, opacity;
+            /* Removed will-change and translateZ - they break backdrop-filter on iOS */
         }
 
         #modalDay { color: #800f2f; font-size: 2.5rem; font-weight: 800; margin-bottom: 5px; letter-spacing: -0.04em; }
