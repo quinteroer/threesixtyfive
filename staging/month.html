@@ -215,17 +215,41 @@
                 opacity: 0;
                 transform: scale(0.7) translateY(40px);
                 -webkit-transform: scale(0.7) translateY(40px);
+                filter: blur(20px);
+                -webkit-filter: blur(20px);
+            }
+            60% {
+                filter: blur(5px);
+                -webkit-filter: blur(5px);
             }
             100% { 
                 opacity: 1;
                 transform: scale(1) translateY(0);
                 -webkit-transform: scale(1) translateY(0);
+                filter: blur(0px);
+                -webkit-filter: blur(0px);
             }
         }
 
-        @keyframes modalIn {
-            from { opacity: 0; transform: scale(0.9) translateY(20px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
+        @keyframes modalBlurOut {
+            0% { 
+                opacity: 1;
+                transform: scale(1) translateY(0);
+                -webkit-transform: scale(1) translateY(0);
+                filter: blur(0px);
+                -webkit-filter: blur(0px);
+            }
+            40% {
+                filter: blur(5px);
+                -webkit-filter: blur(5px);
+            }
+            100% { 
+                opacity: 0;
+                transform: scale(0.7) translateY(40px);
+                -webkit-transform: scale(0.7) translateY(40px);
+                filter: blur(20px);
+                -webkit-filter: blur(20px);
+            }
         }
 
         .shake {
@@ -353,9 +377,20 @@
             }
         }
 
-        function closeModal() { 
-            document.getElementById('modal').classList.remove('active');
-            document.getElementById('musicPlayer').innerHTML = "";
+        function closeModal() {
+            const modal = document.getElementById('modal');
+            const modalContent = modal.querySelector('.modal-content');
+            
+            // Add closing animation
+            modalContent.style.animation = 'modalBlurOut 0.3s cubic-bezier(0.6, 0.04, 0.98, 0.335) forwards';
+            
+            // Wait for animation to finish before hiding
+            setTimeout(() => {
+                modal.classList.remove('active');
+                document.getElementById('musicPlayer').innerHTML = "";
+                // Reset animation for next time
+                modalContent.style.animation = '';
+            }, 300); // Match animation duration
         }
         
         window.onclick = function(event) {
