@@ -69,22 +69,42 @@ body {
     transition: all 0.3s ease;
 }
 
+.date-range {
+    padding: 18px 35px;
+    border-radius: 40px; /* Pill-shaped container */
+    margin: 0 auto 50px auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: fit-content;
+}
+
+
 /* ===========================
    4. UI COMPONENTS
 =========================== */
 .header {
     text-align: center;
-    padding-top: calc(12vh + env(safe-area-inset-top));
-    margin-bottom: 60px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* 12vh gives that specific airy top gap from the light picture */
+    padding-top: calc(12vh + env(safe-area-inset-top)); 
+    margin-bottom: 60px; /* Space between title and date-range */
     animation: fadeIn 1.2s ease-out;
 }
 
 .header h1 {
     font-size: clamp(2.2rem, 8vw, 3.5rem);
     font-weight: 800;
+    /* This tighter line-height is what makes the two lines of text sit close together */
+    line-height: 0.95; 
+    letter-spacing: -0.04em;
     background: var(--header-gradient);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 4px 6px rgba(74, 14, 14, 0.2));
 }
 
 .header p, .side-heart, .day-number, #modalDay, h2 {
@@ -93,19 +113,22 @@ body {
 
 .months-container {
     display: grid;
+    /* repeat(auto-fit...) ensures the cards wrap exactly like the light picture */
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 30px;
-    width: 100%;
+    gap: 30px; /* Specific gap from the original layout */
     max-width: 1200px;
+    width: 100%;
     margin-bottom: 60px;
+    padding: 0 10px;
 }
 
 .month-card {
-    border-radius: 28px;
-    padding: 40px 30px;
+    border-radius: 28px; /* Smooth rounded corners from light version */
+    padding: 40px 30px; /* Internal breathing room for the emoji and text */
     text-align: center;
-    text-decoration: none;
     cursor: pointer;
+    text-decoration: none;
+    transition: transform 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
 .month-card:hover { transform: scale(1.03) translateY(-5px); }
