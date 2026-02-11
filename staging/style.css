@@ -89,16 +89,31 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* 12vh gives that specific airy top gap from the light picture */
+    /* Restores the airy 12vh top gap from the light picture */
     padding-top: calc(12vh + env(safe-area-inset-top)); 
-    margin-bottom: 60px; /* Space between title and date-range */
+    margin-bottom: 60px;
     animation: fadeIn 1.2s ease-out;
 }
 
+.title-container {
+    display: flex;
+    flex-direction: row; /* Forces hearts to the sides */
+    align-items: center;
+    justify-content: center;
+    gap: 20px; /* Space between hearts and text */
+    width: 100%;
+    margin-bottom: 30px; 
+}
+
+.title-text {
+    display: flex;
+    flex-direction: column; /* "365 Days" on top of "of Love" */
+    align-items: center;
+}
 .header h1 {
     font-size: clamp(2.2rem, 8vw, 3.5rem);
     font-weight: 800;
-    /* This tighter line-height is what makes the two lines of text sit close together */
+    /* Tighter line-height to match the light picture's shape */
     line-height: 0.95; 
     letter-spacing: -0.04em;
     background: var(--header-gradient);
@@ -109,6 +124,12 @@ body {
 
 .header p, .side-heart, .day-number, #modalDay, h2 {
     color: var(--text-accent);
+}
+
+.side-heart {
+    font-size: 2.2rem;
+    filter: drop-shadow(0 0 10px rgba(201, 24, 74, 0.3));
+    animation: heartBeat 2.5s ease-in-out infinite;
 }
 
 .months-container {
