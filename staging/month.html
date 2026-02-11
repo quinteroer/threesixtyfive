@@ -161,26 +161,31 @@
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(128, 15, 47, 0.15);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
+            background: rgba(128, 15, 47, 0.1); /* light tint */
             z-index: 1000;
             align-items: center;
             justify-content: center;
             padding: 20px;
         }
-
-        .modal.active { display: flex; animation: modalIn 0.4s ease-out; }
-
+        
+        .modal.active { 
+            display: flex;
+            animation: overlayFadeIn 0.3s ease;
+        }
+        
         .modal-content {
-            background: rgba(255, 255, 255, 0.8);
-            border: 1px solid rgba(255, 255, 255, 1);
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
             padding: 40px 30px;
             border-radius: 35px;
             width: 100%;
             max-width: 450px;
             text-align: center;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+            animation: modalBlurIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            /* Removed will-change and translateZ - they break backdrop-filter on iOS */
         }
 
         #modalDay { color: #800f2f; font-size: 2.5rem; font-weight: 800; margin-bottom: 5px; letter-spacing: -0.04em; }
@@ -200,9 +205,51 @@
             transition: 0.3s;
         }
 
-        @keyframes modalIn {
-            from { opacity: 0; transform: scale(0.9) translateY(20px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
+        @Keyframes overlayFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes modalBlurIn {
+            0% { 
+                opacity: 0;
+                transform: scale(0.7) translateY(40px);
+                -webkit-transform: scale(0.7) translateY(40px);
+                filter: blur(20px);
+                -webkit-filter: blur(20px);
+            }
+            60% {
+                filter: blur(5px);
+                -webkit-filter: blur(5px);
+            }
+            100% { 
+                opacity: 1;
+                transform: scale(1) translateY(0);
+                -webkit-transform: scale(1) translateY(0);
+                filter: blur(0px);
+                -webkit-filter: blur(0px);
+            }
+        }
+
+        @keyframes modalBlurOut {
+            0% { 
+                opacity: 1;
+                transform: scale(1) translateY(0);
+                -webkit-transform: scale(1) translateY(0);
+                filter: blur(0px);
+                -webkit-filter: blur(0px);
+            }
+            40% {
+                filter: blur(5px);
+                -webkit-filter: blur(5px);
+            }
+            100% { 
+                opacity: 0;
+                transform: scale(0.7) translateY(40px);
+                -webkit-transform: scale(0.7) translateY(40px);
+                filter: blur(20px);
+                -webkit-filter: blur(20px);
+            }
         }
 
         .shake {
@@ -217,6 +264,7 @@
     </style>
 </head>
 <body>
+    <div class="bg-fixed"></div>
     <a href="index.html" class="back-button">← Back</a>
     
     <div class="header">
@@ -329,9 +377,20 @@
             }
         }
 
-        function closeModal() { 
-            document.getElementById('modal').classList.remove('active');
-            document.getElementById('musicPlayer').innerHTML = "";
+        function closeModal() {
+            const modal = document.getElementById('modal');
+            const modalContent = modal.querySelector('.modal-content');
+            
+            // Add closing animation
+            modalContent.style.animation = 'modalBlurOut 0.3s cubic-bezier(0.6, 0.04, 0.98, 0.335) forwards';
+            
+            // Wait for animation to finish before hiding
+            setTimeout(() => {
+                modal.classList.remove('active');
+                document.getElementById('musicPlayer').innerHTML = "";
+                // Reset animation for next time
+                modalContent.style.animation = '';
+            }, 300); // Match animation duration
         }
         
         window.onclick = function(event) {
