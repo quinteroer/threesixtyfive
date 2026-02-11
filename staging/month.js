@@ -24,7 +24,7 @@ if (config) {
 
     const grid = document.getElementById('calendarGrid');
     const today = new Date();
-    const countdownStart = new Date(2026, 1, 9); 
+    const countdownStart = new Date(2026, 1, 10); // Feb 14, 2026
     const openedDays = JSON.parse(localStorage.getItem('openedLoveDays') || '{}');
 
     for (let day = config.startDay; day <= config.endDay; day++) {
@@ -32,21 +32,31 @@ if (config) {
         cardDate.setDate(countdownStart.getDate() + day - 1);
         
         const isUnlocked = today >= cardDate; 
-        const card = document.createElement('div');
-        card.className = `day-card ${isUnlocked ? 'unlocked' : 'locked'}`;
+        const isOpened = openedDays[`day${day}`];
         
-        if (openedDays[`day${day}`]) {
-            card.classList.add('checked');
+        const card = document.createElement('div');
+        card.className = `day-card ${isUnlocked ? 'unlocked' : 'locked'}${isOpened ? ' checked' : ''}`;
+        card.style.animationDelay = `${(day - config.startDay) * 0.05}s`;
+        // Card structure
+        if (isUnlocked) {
+            card.innerHTML = `
+                <span class="check-mark">❤️</span>
+                <div class="day-number">${day}</div>
+                <div class="day-label">Day ${day}</div>
+            `;
+        } else {
+            card.innerHTML = `
+                <div class="lock-icon">🔒</div>
+                <div class="day-label">DAY ${day}</div>
+            `;
         }
 
-        card.innerHTML = `
-            <span class="check-mark">❤️</span>
-            <div class="day-number">${isUnlocked ? day : '🔒'}</div>
-            <div class="day-label">Day ${day}</div>
-        `;
-
-        // Handle touch release to reset swell
-        card.ontouchend = () => { card.style.transform = "scale(1)"; };
+        // Handle touch release to reset scale
+        card.ontouchend = () => { 
+            if (isUnlocked) {
+                card.style.transform = "scale(1)"; 
+            }
+        };
         
         if (isUnlocked) {
             const dayData = (typeof loveData !== 'undefined') ? loveData[`day${day}`] : null;
@@ -103,7 +113,7 @@ function closeModal() {
         document.getElementById('musicPlayer').innerHTML = "";
         // Reset animation for next time
         modalContent.style.animation = '';
-    }, 300); // Match animation duration
+    }, 300);
 }
 
 window.onclick = function(event) {

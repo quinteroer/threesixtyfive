@@ -17,6 +17,20 @@ function closeWelcome() {
     document.getElementById('welcomeModal').style.display = 'none';
 }
 
+function transitionToMonth(monthNumber) {
+    const allCards = document.querySelectorAll('.month-card');
+    
+    // 1. Add the exit animation class to all cards for a unified look
+    allCards.forEach(card => {
+        card.classList.add('exit-animation');
+    });
+
+    // 2. Wait for the animation to finish (600ms) before changing the page
+    setTimeout(() => {
+        window.location.href = `month.html?month=${monthNumber}`;
+    }, 550); 
+}
+
 // Check if the app is being viewed in the browser or as an installed app
 if (!isInstalled) {
     // Show the prompt if we are in the browser
