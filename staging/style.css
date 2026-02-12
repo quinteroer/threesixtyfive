@@ -278,7 +278,8 @@ body {
     font-weight: 600;
     opacity: 0.8;
     border-top: 1px solid var(--footer-border);
-    width: 100%;
+    width: 110%;
+    
 }
 
 /* ===========================
