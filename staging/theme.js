@@ -3,12 +3,12 @@ function applyDynamicTheme() {
     const lat = 38.431702;
     const lng = -78.862391;
     const now = new Date();
-    const times = SunCalc.getTimes(now, lat, lng);
+    const times = SunCalc.getTimes(now, lat, lng)
     const sunsetTime = times.sunset;
     const sunriseTime = times.sunrise;
     const isNight = now >= sunsetTime || now < sunriseTime;
     //console.log("Sunrise = ", sunriseTime, "\nSunset = ", sunsetTime);
-    //isNight = false
+    //isNight = true
 
     if (isNight) {
         document.documentElement.setAttribute('data-theme', 'dark');
