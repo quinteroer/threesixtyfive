@@ -32,6 +32,11 @@
     --footer-border: rgba(201, 176, 122, 0.2);
     --card-shadow: rgba(128, 15, 47, 0.06);
     --date-shadow: rgba(128, 15, 47, 0.05);
+
+    --glass-bg: rgba(255, 255, 255, 0.15);
+    --glass-reflection: rgba(255, 255, 255, 0.1);
+    --glass-shine: rgba(255, 255, 255, 1);
+    --glass-edge: rgba(255, 255, 255, 0.8);
 }
 
 [data-theme="dark"] {
@@ -49,6 +54,11 @@
     --footer-border: rgba(255, 143, 163, 0.2);
     --card-shadow: rgba(0, 0, 0, 0.15);
     --date-shadow: rgba(0, 0, 0, 0.1);
+
+    --glass-bg: rgba(0, 0, 0, 0.3); /* Darker tinted glass */
+    --glass-reflection: rgba(255, 255, 255, 0.05);
+    --glass-shine: rgba(255, 255, 255, 0.3); /* Dimmer shine for dark mode */
+    --glass-edge: rgba(255, 255, 255, 0.2);
 }
 
 /* ===========================
@@ -70,6 +80,22 @@ body {
     padding: 20px;
     padding-top: env(safe-area-inset-top);
     color: var(--text-primary);
+}
+
+#page-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    min-height: 100vh;
+    /* Apply the entry animation here */
+    animation: pageFlyIn 0.8s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+    perspective: 1000px;
+    transform-style: preserve-3d;
+}
+
+#page-wrapper.page-exit {
+    animation: pageFlyOut 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
 }
 
 .bg-fixed {
@@ -261,22 +287,49 @@ body {
    7. BACK BUTTON
 =========================== */
 .back-button {
-    position: fixed;
-    top: calc(env(safe-area-inset-top) + 20px);
-    left: 20px;
-    background: var(--card-bg);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
+    /* --- Visibility & Opacity --- */
+    --glass-bg: rgba(255, 255, 255, 0.45); 
+    
+    /* Sticky ensures it stays at the bottom during scroll */
+    position: sticky !important;
+    bottom: 20px !important;
+    
+    /* --- Stretching Logic --- */
+    align-self: center; /* Centers the stretched bar */
+    width: calc(100%) !important; /* Full width minus 20px margins on each side */
+    max-width: 1000px; /* Prevents it from getting too wide on desktop */
+    
+    /* Layout Adjustments */
+    margin-top: -35px !important; 
+    margin-bottom: 20px;
+    z-index: 9999;
+
+    /* Glass Engine Styles */
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    
     color: var(--text-accent);
-    border: 1px solid var(--glass-border);
-    border-radius: 30px;
-    padding: 12px 30px;
-    font-weight: 700;
-    cursor: pointer;
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-radius: 25px; /* Slightly less rounded for a bar look */
+    
+    /* Text Centering */
+    text-align: center;
+    font-weight: 800;
     text-decoration: none;
+    display: block; /* Required for width to take effect */
+    
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); 
     transition: all 0.3s ease;
-    z-index: 1000;
-    box-shadow: 0 4px 15px rgba(128, 15, 47, 0.1);
+}
+
+[data-theme="dark"] .back-button {
+    --glass-bg: rgba(0, 0, 0, 0.6);
+}
+
+.back-button:hover {
+    transform: translateY(-2px);
+    --glass-bg: rgba(255, 255, 255, 0.55);
 }
 
 .back-button:hover {
@@ -565,20 +618,20 @@ body {
     }
 }
 
-@keyframes appleFlyIn {
+@keyframes pageFlyIn {
     0% {
         opacity: 0;
-        transform: translateZ(500px) translateY(100px) rotateX(-20deg);
-        filter: blur(20px); /* Adds that "out of focus" look as they fly past */
+        transform: translateZ(200px) translateY(20px);
+        filter: blur(15px);
     }
     100% {
         opacity: 1;
-        transform: translateZ(0) translateY(0) rotateX(0);
+        transform: translateZ(0) translateY(0);
         filter: blur(0);
     }
 }
 
-@keyframes appleFlyOut {
+@keyframes pageFlyOut {
     0% {
         opacity: 1;
         transform: translateZ(0) scale(1);
@@ -586,7 +639,7 @@ body {
     }
     100% {
         opacity: 0;
-        transform: translateZ(-500px) scale(0.5); /* Recedes into the page */
+        transform: translateZ(-300px) scale(0.9);
         filter: blur(15px);
     }
 }
@@ -627,4 +680,42 @@ body {
         padding: 10px 20px;
         font-size: 0.9rem;
     }
+}
+
+/* --- THE GLASS ENGINE --- */
+/* --- THE DYNAMIC GLASS ENGINE --- */
+.glass {
+  position: relative;
+  background: var(--glass-bg); /* Controlled by theme */
+  backdrop-filter: blur(5px) saturate(180%);
+  -webkit-backdrop-filter: blur(5px) saturate(180%);
+  
+  border: 1px solid var(--glass-edge);
+  border-radius: 2rem;
+  padding: 1.5rem;
+  
+  box-shadow: 0 8px 32px var(--card-shadow), 
+              inset 0 4px 20px rgba(255, 255, 255, 0.1);
+  
+  color: var(--text-primary); /* Uses your existing theme text color */
+  transition: background 0.5s ease, border 0.5s ease;
+}
+
+.glass::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--glass-reflection);
+  border-radius: 2rem;
+  backdrop-filter: blur(1px);
+  box-shadow: inset -10px -8px 0px -11px var(--glass-shine),
+              inset 0px -9px 0px -8px var(--glass-shine);
+  opacity: 0.6;
+  z-index: -1;
+  filter: blur(1px) brightness(115%);
+  pointer-events: none;
+  transition: box-shadow 0.5s ease;
 }

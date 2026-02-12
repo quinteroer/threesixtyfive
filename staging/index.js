@@ -18,14 +18,11 @@ function closeWelcome() {
 }
 
 function transitionToMonth(monthNumber) {
-    const allCards = document.querySelectorAll('.month-card');
-    
-    // 1. Add the exit animation class to all cards for a unified look
-    allCards.forEach(card => {
-        card.classList.add('exit-animation');
-    });
+    const wrapper = document.getElementById('page-wrapper');
+    // 1. Apply the exit animation to the entire body
+    wrapper.classList.add('page-exit');
 
-    // 2. Wait for the animation to finish (600ms) before changing the page
+    // 2. Wait for the animation (600ms) before changing the page
     setTimeout(() => {
         window.location.href = `month.html?month=${monthNumber}`;
     }, 550); 
@@ -47,16 +44,8 @@ document.getElementById('installBtn').addEventListener('click', () => {
 });
 
 window.addEventListener('pageshow', function(event) {
-    // If the page is loaded from the cache (like swiping back)
     if (event.persisted) {
-        const allCards = document.querySelectorAll('.month-card');
-        allCards.forEach(card => {
-            // Remove the animation class so they aren't hidden
-            card.classList.remove('exit-animation');
-            // Force a quick style reset to ensure they're clickable
-            card.style.opacity = "1";
-            card.style.transform = "translateZ(0) scale(1)";
-        });
-        console.log("♻️ Navigation state reset");
+        const wrapper = document.getElementById('page-wrapper');
+        if(wrapper) wrapper.classList.remove('page-exit');
     }
 });

@@ -35,7 +35,7 @@ if (config) {
         const isOpened = openedDays[`day${day}`];
         
         const card = document.createElement('div');
-        card.className = `day-card ${isUnlocked ? 'unlocked' : 'locked'}${isOpened ? ' checked' : ''}`;
+        card.className = `day-card glass ${isUnlocked ? 'unlocked' : 'locked'}${isOpened ? ' checked' : ''}`;
         card.style.animationDelay = `${(day - config.startDay) * 0.05}s`;
         // Card structure
         if (isUnlocked) {
@@ -120,3 +120,15 @@ window.onclick = function(event) {
     const modal = document.getElementById('modal');
     if (event.target == modal) { closeModal(); }
 }
+
+document.querySelector('.back-button').addEventListener('click', function(e) {
+    e.preventDefault();
+    const target = this.getAttribute('href');
+    const wrapper = document.getElementById('page-wrapper');
+    
+    wrapper.classList.add('page-exit');
+    
+    setTimeout(() => {
+        window.location.href = target;
+    }, 550);
+});

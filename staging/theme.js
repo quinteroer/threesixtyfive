@@ -1,10 +1,15 @@
 // theme.js
 function applyDynamicTheme() {
-    const hour = new Date().getHours();
-    
-    // Day: 7 AM to 7 PM | Night: 7 PM to 7 AM
-    const isNight = hour < 7 || hour >= 19;
-    
+    const lat = 38.431702;
+    const lng = -78.862391;
+    const now = new Date();
+    const times = SunCalc.getTimes(now, lat, lng);
+    const sunsetTime = times.sunset;
+    const sunriseTime = times.sunrise;
+    const isNight = now >= sunsetTime || now < sunriseTime;
+    //console.log("Sunrise = ", sunriseTime, "\nSunset = ", sunsetTime);
+    //isNight = false
+
     if (isNight) {
         document.documentElement.setAttribute('data-theme', 'dark');
         console.log("🌙 Night mode active");
