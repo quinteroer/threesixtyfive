@@ -1,332 +1,133 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="preload" as="image" href="assets/background-night.jpg">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>💕 365 Days of Love 💕</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
     <meta name="theme-color" content="#ffcbd5">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&family=Playfair+Display:ital,wght@0,700;1,700&display=swap');
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            padding-top: env(safe-area-inset-top);
-            color: #4a0e0e; 
-        }
-
-        .bg-fixed {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: -1; /* Puts it behind everything */
-            background-image: url('assets/background.jpg');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-        }
-
-        .header {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            width: 100%;
-            /* 12% of the screen height + the Dynamic Island height */
-            padding-top: calc(12vh + env(safe-area-inset-top)); 
-            padding-left: 20px;
-            padding-right: 20px;
-            /* Added space between the title and the first card */
-            margin-bottom: 60px; 
-            animation: fadeIn 1.2s ease-out;
-        }
-
-        .title-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 20px;
-            width: 100%;
-            /* Extra room below the title block */
-            margin-bottom: 30px; 
-        }
-
-        
-
-        .title-text {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .header h1 {
-            font-size: clamp(2.2rem, 8vw, 3.5rem);
-            font-weight: 800;
-            line-height: 0.95;
-            letter-spacing: -0.04em;
-            background: linear-gradient(to bottom, #ffb3c1 0%, #a44a5f 50%, #5e1d2c 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 4px 6px rgba(74, 14, 14, 0.2));
-        }
-
-        .side-heart {
-            font-size: 2.2rem;
-            filter: drop-shadow(0 0 10px rgba(201, 24, 74, 0.3));
-            animation: heartBeat 2.5s ease-in-out infinite;
-        }
-
-        .header p {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.3rem;
-            color: #800f2f;
-            font-style: italic;
-            font-weight: 700;
-            /* Extra space below the "A Year of Love" text */
-            margin-top: 25px; 
-            opacity: 0.9;
-        }
-
-        .date-range {
-            background: rgba(255, 255, 255, 0.3);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            padding: 18px 35px;
-            border-radius: 40px;
-            margin: 0 auto 50px auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: fit-content;
-            max-width: 90%;
-            box-shadow: 0 10px 25px rgba(128, 15, 47, 0.05);
-        }
-
-        .date-range p {
-            color: #4a0e0e;
-            font-size: 0.9rem;
-            font-weight: 800;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            gap: 8px;
-        }
-
-        .months-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            max-width: 1200px;
-            width: 100%;
-            margin-bottom: 60px;
-            padding: 0 10px;
-        }
-
-        .month-card {
-            background: rgba(255, 255, 255, 0.4);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border-radius: 28px;
-            padding: 40px 30px;
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            box-shadow: 0 12px 40px rgba(128, 15, 47, 0.06);
-            cursor: pointer;
-            transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
-            text-decoration: none;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .month-card:hover {
-            transform: scale(1.03) translateY(-5px);
-            background: rgba(255, 255, 255, 0.55);
-            border-color: rgba(201, 176, 122, 0.8);
-        }
-
-        .month-card .month-emoji {
-            font-size: 3.5rem;
-            margin-bottom: 20px;
-            transition: transform 0.3s ease;
-        }
-
-        .month-card:hover .month-emoji {
-            transform: scale(1.1);
-        }
-
-        .month-card h2 {
-            font-size: 1.8rem;
-            font-weight: 800;
-            color: #800f2f;
-            margin-bottom: 8px;
-            letter-spacing: -0.02em;
-        }
-
-        .month-card p {
-            color: #4a0e0e;
-            font-size: 1rem;
-            opacity: 0.7;
-            font-weight: 600;
-        }
-
-        .footer {
-            padding: 60px 20px;
-            text-align: center;
-            color: #800f2f;
-            font-style: italic;
-            font-weight: 600;
-            opacity: 0.8;
-            border-top: 1px solid rgba(201, 176, 122, 0.2);
-            width: 100%;
-        }
-
-        @keyframes heartBeat {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.15); }
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @media (max-width: 600px) {
-            .header { 
-                /* Match the 12vh airy look on mobile too */
-                padding-top: calc(12vh + env(safe-area-inset-top)); 
-            }
-            .header h1 { 
-                /* Keep the title slightly smaller so it doesn't wrap weirdly on small screens */
-                font-size: 2.2rem; 
-            }
-            .date-range { 
-                padding: 12px 20px; 
-            }
-            .months-container { 
-                grid-template-columns: 1fr; 
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="bg-fixed"></div>
-    <div class="header">
-        <div class="title-container">
-            <span class="side-heart">💕</span>
-            <div class="title-text">
-                <h1>365 Days</h1>
-                <h1>of Love</h1>
+    <div id="page-wrapper">
+        <div class="header">
+            <div class="title-container">
+                <div class="title-text">
+                    <h1>365 DAYS</h1>
+                    <h1>OF LOVE</h1>
+                </div>
             </div>
-            <span class="side-heart">💕</span>
+            <p>A Year of Love, One Day at a Time</p>
         </div>
-        <p>A Year of Love, One Day at a Time</p>
+
+        <div class="date-range glass">
+            <p>
+                <span class="date-text">Feb 14, 2026</span>
+                <span class="date-divider">—</span>
+                <span class="date-text">Feb 13, 2027</span>
+            </p>
+        </div>
+
+        <div class="months-container">
+            <div onclick="transitionToMonth(1)" class="month-card glass">
+                <span class="month-emoji">💝</span>
+                <h2>February 2026</h2>
+                <p>Days 1-15 | The Journey Begins</p>
+            </div>
+
+            <div onclick="transitionToMonth(2)" class="month-card glass">
+                <span class="month-emoji">🌸</span>
+                <h2>March</h2>
+                <p>Days 16-46 | Spring Blooms</p>
+            </div>
+
+            <div onclick="transitionToMonth(3)" class="month-card glass">
+                <span class="month-emoji">🌷</span>
+                <h2>April</h2>
+                <p>Days 47-76 | Affection</p>
+            </div>
+
+            <div onclick="transitionToMonth(4)" class="month-card glass">
+                <span class="month-emoji">🌹</span>
+                <h2>May</h2>
+                <p>Days 77-107 | Devotion</p>
+            </div>
+
+            <div onclick="transitionToMonth(5)" class="month-card glass">
+                <span class="month-emoji">☀️</span>
+                <h2>June</h2>
+                <p>Days 108-137 | Summer Shine</p>
+            </div>
+
+            <div onclick="transitionToMonth(6)" class="month-card glass">
+                <span class="month-emoji">🌺</span>
+                <h2>July</h2>
+                <p>Days 138-168 | Warm Hearts</p>
+            </div>
+
+            <div onclick="transitionToMonth(7)" class="month-card glass">
+                <span class="month-emoji">🌻</span>
+                <h2>August</h2>
+                <p>Days 169-199 | Golden Moments</p>
+            </div>
+
+            <div onclick="transitionToMonth(8)" class="month-card glass">
+                <span class="month-emoji">🍂</span>
+                <h2>September</h2>
+                <p>Days 200-229 | Falling for You</p>
+            </div>
+
+            <div onclick="transitionToMonth(9)" class="month-card glass">
+                <span class="month-emoji">🎃</span>
+                <h2>October</h2>
+                <p>Days 230-260 | Cozy Autumn</p>
+            </div>
+
+            <div onclick="transitionToMonth(10)" class="month-card glass">
+                <span class="month-emoji">🍁</span>
+                <h2>November</h2>
+                <p>Days 261-290 | Grateful</p>
+            </div>
+
+            <div onclick="transitionToMonth(11)" class="month-card glass">
+                <span class="month-emoji">❄️</span>
+                <h2>December</h2>
+                <p>Days 291-321 | Winter Warmth</p>
+            </div>
+
+            <div onclick="transitionToMonth(12)" class="month-card glass">
+                <span class="month-emoji">🎊</span>
+                <h2>January 2027</h2>
+                <p>Days 322-352 | New Year</p>
+            </div>
+
+            <div onclick="transitionToMonth(13)" class="month-card glass">
+                <span class="month-emoji">💖</span>
+                <h2>February 2027</h2>
+                <p>Days 353-365 | Full Circle</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>💕 It is a priviledge to be yours 💕</p>
+        </div>
+
+        
     </div>
-
-    <div class="date-range">
-        <p>
-            <span class="date-text">Feb 14, 2026</span>
-            <span class="date-divider">—</span>
-            <span class="date-text">Feb 13, 2027</span>
-        </p>
+    <div id="welcomeModal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-emoji">✨</div>
+            <h2>Will you be my Valentine?</h2>
+            <p>Each of these songs I've picked out are ones either me or you have loved. Most of them are love songs.</p>
+            <p class="hint">Check back every morning for a new surprise. 💕</p>
+            <button class="close-btn" onclick="closeWelcome()">Start the Journey</button>
+        </div>
     </div>
-
-    <div class="months-container">
-        <a href="month.html?month=1" class="month-card">
-            <span class="month-emoji">💝</span>
-            <h2>February 2026</h2>
-            <p>Days 1-15 | The Journey Begins</p>
-        </a>
-
-        <a href="month.html?month=2" class="month-card">
-            <span class="month-emoji">🌸</span>
-            <h2>March</h2>
-            <p>Days 16-46 | Spring Blooms</p>
-        </a>
-
-        <a href="month.html?month=3" class="month-card">
-            <span class="month-emoji">🌷</span>
-            <h2>April</h2>
-            <p>Days 47-76 | Affection</p>
-        </a>
-
-        <a href="month.html?month=4" class="month-card">
-            <span class="month-emoji">🌹</span>
-            <h2>May</h2>
-            <p>Days 77-107 | Devotion</p>
-        </a>
-
-        <a href="month.html?month=5" class="month-card">
-            <span class="month-emoji">☀️</span>
-            <h2>June</h2>
-            <p>Days 108-137 | Summer Shine</p>
-        </a>
-
-        <a href="month.html?month=6" class="month-card">
-            <span class="month-emoji">🌺</span>
-            <h2>July</h2>
-            <p>Days 138-168 | Warm Hearts</p>
-        </a>
-
-        <a href="month.html?month=7" class="month-card">
-            <span class="month-emoji">🌻</span>
-            <h2>August</h2>
-            <p>Days 169-199 | Golden Moments</p>
-        </a>
-
-        <a href="month.html?month=8" class="month-card">
-            <span class="month-emoji">🍂</span>
-            <h2>September</h2>
-            <p>Days 200-229 | Falling for You</p>
-        </a>
-
-        <a href="month.html?month=9" class="month-card">
-            <span class="month-emoji">🎃</span>
-            <h2>October</h2>
-            <p>Days 230-260 | Cozy Autumn</p>
-        </a>
-
-        <a href="month.html?month=10" class="month-card">
-            <span class="month-emoji">🍁</span>
-            <h2>November</h2>
-            <p>Days 261-290 | Grateful</p>
-        </a>
-
-        <a href="month.html?month=11" class="month-card">
-            <span class="month-emoji">❄️</span>
-            <h2>December</h2>
-            <p>Days 291-321 | Winter Warmth</p>
-        </a>
-
-        <a href="month.html?month=12" class="month-card">
-            <span class="month-emoji">🎊</span>
-            <h2>January 2027</h2>
-            <p>Days 322-352 | New Year</p>
-        </a>
-
-        <a href="month.html?month=13" class="month-card">
-            <span class="month-emoji">💖</span>
-            <h2>February 2027</h2>
-            <p>Days 353-365 | Full Circle</p>
-        </a>
-    </div>
-
-    <div class="footer">
-        <p>💕 Made with endless love for Isabella 💕</p>
-    </div>
+    <script src="index.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.9.0/suncalc.min.js"></script>
+    <script src="theme.js"></script>
 </body>
 </html>

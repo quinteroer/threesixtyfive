@@ -1,10 +1,12 @@
 {
-  "name": "365 Days of Love",
-  "short_name": "365 Songs",
+  "name": "STAGING - 365 Days",
+  "short_name": "STAGING",
   "start_url": "./index.html",
+  "description": "A year of songs for Isabella",
   "display": "standalone",
   "background_color": "#ffcbd5",
   "theme_color": "#ffcbd5",
+  "orientation": "portait",
   "icons": [
     {
       "src": "assets/apple-touch-icon.png",
@@ -20,3 +22,4 @@
     }
   ]
 }
+
