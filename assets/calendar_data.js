@@ -1,4 +1,4 @@
-const loveData = {
+const loveData = { 
   "day1": {
     "title": "Day 1",
     "message": "Happy Valentines, Belly. You're the love of my life and I am so full of happiness that I can be in your life. Being your boyfriend and your best friend is the highest privelidge.",
